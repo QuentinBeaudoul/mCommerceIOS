@@ -54,7 +54,7 @@ class ProductViewModel: NSObject {
                 context.delete(item)
             }
         }catch {
-            //TODO
+            print("database not cleared !")
         }
     }
 }
