@@ -13,6 +13,7 @@ class APIService: NSObject {
         URLSession.shared.dataTask(with: sourcesURL) { (data, URLResponse, error) in
             if let data = data {
                 let jsonDecoder = JSONDecoder()
+                jsonDecoder.userInfo[CodingUserInfoKey.managedObjectContext] = AppDelegate.viewContext
                 let productData = try! jsonDecoder.decode(Products.self, from: data)
                 completion(productData)
             }

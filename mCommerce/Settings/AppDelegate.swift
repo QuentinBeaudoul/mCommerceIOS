@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // MARK: - Core Data stack
-
+    
     lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation
@@ -57,6 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return container
     }()
+    
+    static var persistentContainer: NSPersistentContainer {
+        return (UIApplication.shared.delegate as! AppDelegate).persistentContainer
+    }
 
     // MARK: - Core Data Saving support
 
@@ -73,6 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
+    static var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
 }
 

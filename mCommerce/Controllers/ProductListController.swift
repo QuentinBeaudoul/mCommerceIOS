@@ -13,14 +13,17 @@ class ProductListController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     private var productViewModel: ProductViewModel!
     private var dataSource: ProductTableViewDataSource<ProductTableViewCell, ProductData>!
+    private let refreshControl = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupRefreshControl()
         callToViewModelForUIUpdate()
     }
     
     func callToViewModelForUIUpdate() {
         productViewModel = ProductViewModel()
+        updateDataSource()
         productViewModel.bindProductViewModelToController = {
             self.updateDataSource()
         }
@@ -31,12 +34,21 @@ class ProductListController: UIViewController {
             (cell, product) in
             cell.nameLabelView.text = product.name
             cell.priceLabelView.text = String(product.price) + " €"
-            cell.iconImageView.loadImage(withUrl: URL(string: product.image)!)
+            cell.iconImageView.loadImage(withUrl: URL(string: product.image!)!)
         })
         DispatchQueue.main.async {
             self.tableView.dataSource = self.dataSource
             self.tableView.reloadData()
         }
+    }
+    
+   private func setupRefreshControl(){
+        tableView.refreshControl = refreshControl
+    refreshControl.addTarget(self, action: #selector(updateData), for: .valueChanged)
+    }
+    
+    @objc func updateData(){
+        productViewModel.callFuncToGetProductData()
     }
 }
 extension UIImageView {
@@ -47,6 +59,10 @@ extension UIImageView {
                     DispatchQueue.main.async {
                         self?.image = image
                     }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.image = UIImage(named: "Logo")
                 }
             }
         }
